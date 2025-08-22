@@ -1,18 +1,18 @@
 
 import {log} from "./utils/logger.js";
 import {fetchTransactions} from "./api/fetchData.js";
+import {calculateRewardPoints} from "./utils/rewardCalculator.js"
   
-    // Constants
     const POINTS_PER_DOLLAR_OVER_100 = 2;
     const POINTS_PER_DOLLAR_BETWEEN_50_100 = 1;
     const ITEMS_PER_PAGE = 5;
-    const MOCK_DATA_PATH = '/public/data/transactions.json'; 
-
+    
     // State
     let transactions = []; // Loaded transactions from the API
     let customers = new Set();
     let filteredTransactions = [];
     let currentCustomerId = null;
+    let currentYear = null; // Format: YYYY
     let currentMonth = null; // Format: YYYY-MM
     let currentPage = 1;
 
@@ -25,33 +25,6 @@ import {fetchTransactions} from "./api/fetchData.js";
     const paginationSection = document.getElementById('paginationSection').querySelector('nav');
     const logList = document.getElementById('logList');
     const loader = document.getElementById('loader');
-
-   
-
-
-   
-   
-    /**
-     * Calculate reward points for a single transaction amount
-     * Rules:
-     * - 2 points for every dollar spent over $100
-     * - 1 point for every dollar spent between $50 and $100
-     * @param {number} amount 
-     * @returns {number} Points earned
-     */
-    function calculateRewardPoints(amount) {
-      if (typeof amount !== 'number' || isNaN(amount) || amount < 0) {
-        return 0;
-      }
-      let points = 0;
-      if (amount > 100) {
-        points += (amount - 100) * POINTS_PER_DOLLAR_OVER_100;
-        points += 50 * POINTS_PER_DOLLAR_BETWEEN_50_100;
-      } else if (amount > 50) {
-        points += (amount - 50) * POINTS_PER_DOLLAR_BETWEEN_50_100;
-      }
-      return Math.floor(points);
-    }
 
     /**
      * Populate customer dropdown with options sorted by customerId
@@ -78,8 +51,9 @@ import {fetchTransactions} from "./api/fetchData.js";
      * Defaults to 2025 if present
      * @param {string} customerId
      */
-    function populateMonthDropdown(customerId) {
-      yearSelect.innerHTML='';
+
+    function populateYearDropdown(customerId) {
+       yearSelect.innerHTML='';
       if (!customerId) {
         const option = document.createElement('option');
         option.value = '';
@@ -88,6 +62,23 @@ import {fetchTransactions} from "./api/fetchData.js";
         yearSelect.disabled = true;
         return;
       }
+
+      const custTxns = transactions.filter(txn => txn.customerId === customerId);
+      const years = new Set();
+      custTxns.forEach(txn => {
+        years.add(txn.date.slice(0,4)); 
+      });
+ 
+     const yearsArr = Array.from(years).sort((a,b) => b.localeCompare(a));
+        yearsArr.forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        yearSelect.appendChild(opt);
+      });
+     
+    }
+    function populateMonthDropdown(customerId) {
       monthSelect.disabled = false;
       monthSelect.innerHTML = '';
       if (!customerId) {
@@ -101,16 +92,8 @@ import {fetchTransactions} from "./api/fetchData.js";
       monthSelect.disabled = false;
 
       // Get unique months for this customer sorted descending
-      const custTxns = transactions.filter(txn => txn.customerId === customerId);
+      const custTxns = transactions.filter(txn => txn.customerId === customerId && txn.date.slice(0,4) === yearSelect.value);
 
-      const years = new Set();
-
-      custTxns.forEach(txn => {
-        years.add(txn.date.slice(0,4)); // YYYY-MM
-      });
- 
-      console.log(years);
-      
       const months = new Set();
       custTxns.forEach(txn => {
         months.add(txn.date.slice(0,7)); // YYYY-MM
@@ -119,11 +102,12 @@ import {fetchTransactions} from "./api/fetchData.js";
 
       const monthsArr = Array.from(months).sort((a,b) => b.localeCompare(a));
       console.log(monthsArr)
+  
 
       // If 2025 exists, default select 2025's first month, else latest month
       let defaultMonth = monthsArr.find(m => m.startsWith('2025'));
       if (!defaultMonth) {
-        defaultMonth = monthsArr.length > 0 ? monthsArr[0] : '';
+        defaultMonth = monthsArr.length > 0 ? monthsArr[0] : '3';
       }
 
       // Add default option
@@ -143,14 +127,6 @@ import {fetchTransactions} from "./api/fetchData.js";
         monthSelect.appendChild(opt);
       });
  
-   
-       const yearsArr = Array.from(years).sort((a,b) => b.localeCompare(a));
-        yearsArr.forEach(y => {
-        const opt = document.createElement('option');
-        opt.value = y;
-        opt.textContent = y;
-        yearSelect.appendChild(opt);
-      });
     }
 
 
@@ -181,6 +157,14 @@ import {fetchTransactions} from "./api/fetchData.js";
         filtered = filtered.filter(txn => txn.date.startsWith(month));
       }
       return filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+    }
+    function filterYears(customerId, month){
+      if (!customerId) return [];
+      let filtered = transactions.filter((txn) => txn.customerId === customerId);
+      if (month) {
+        filtered = filtered.filter(txn => txn.date.startsWith(month));
+      }
+       return filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
     }
 
     /**
@@ -240,6 +224,7 @@ import {fetchTransactions} from "./api/fetchData.js";
       }
       const startIndex = (page - 1) * ITEMS_PER_PAGE;
       const pageItems = txns.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
 
       transactionsTableBody.innerHTML = pageItems.map(txn => {
         const dateObj = new Date(txn.date);
@@ -319,11 +304,23 @@ import {fetchTransactions} from "./api/fetchData.js";
     function onCustomerChange() {
       currentCustomerId = customerSelect.value || null;
       currentPage = 1;
-      populateMonthDropdown(currentCustomerId);
+      populateYearDropdown(currentCustomerId)
+      populateMonthDropdown(currentCustomerId)
       currentMonth = monthSelect.value || null;
+      currentYear = yearSelect.value || null;
       filteredTransactions = filterTransactions(currentCustomerId, currentMonth);
+      let filteredYears = filterYears(currentCustomerId, currentYear);
       updateTableAndPagination();
       log(`Customer selected: ${currentCustomerId}`);
+    }
+
+    function onYearChange() {
+      currentYear = yearSelect.value || null;
+      currentPage = 1;
+      filteredTransactions = filterTransactions(currentCustomerId, currentYear);
+      updateTableAndPagination();
+      log(`Year selected: ${currentYear}`);
+      populateMonthDropdown(currentCustomerId)
     }
 
     /**
@@ -337,9 +334,6 @@ import {fetchTransactions} from "./api/fetchData.js";
       log(`Month selected: ${currentMonth}`);
     }
 
-    /**
-     * Initialization sequence - fetch data, populate controls, and hook event listeners
-     */
     async function init() {
       try {
         log('Initializing application...');
@@ -361,6 +355,7 @@ import {fetchTransactions} from "./api/fetchData.js";
     // Event listeners
     customerSelect.addEventListener('change', onCustomerChange);
     monthSelect.addEventListener('change', onMonthChange);
+    yearSelect.addEventListener('change', onYearChange);
 
     // Run app
     init();

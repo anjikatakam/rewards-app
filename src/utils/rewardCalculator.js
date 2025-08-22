@@ -1,4 +1,4 @@
-function calculateRewardPoints(amount) {
+export function calculateRewardPoints(amount) {
   if (typeof amount !== "number" || amount <= 0) return 0;
 
   let points = 0;
@@ -11,4 +11,4 @@ function calculateRewardPoints(amount) {
   return points;
 }
 
-module.exports = calculateRewardPoints;
+ 

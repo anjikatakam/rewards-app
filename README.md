@@ -17,12 +17,6 @@ Display of reward points earned per transaction.
 Logging of transactions and calculations.
 Unit tests to ensure the correctness of the reward calculation logic.
 
-# Implementation Guidelines
-Language: Vanilla JavaScript (no TypeScript, Angular, or React).
-Data Handling: Use a local JSON mock file to simulate API interactions.
-Asynchronous API Simulation: Implement a simple asynchronous call to fetch data with a loading state and error handling.
-Data Structure: Create a mock JSON dataset with a minimum of 15 customers, including customerId, transactionId, amount, and date, located in the Public -> data folder.
-Dynamic Display: Use a table, dropdown, or pagination to display customer data.
 
 # Filters:
 Default to the last 3 months.
@@ -44,8 +38,6 @@ Implement a minimum of 3 positive and 3 negative unit test cases, including test
  # Project root folder // rewards-app/ run the below commands to test the app
  # npm install
  # npm test
-
- ![alt text](test.PNG)
 
 Documentation
 # Project Setup
