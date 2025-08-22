@@ -99,11 +99,7 @@ import {calculateRewardPoints} from "./utils/rewardCalculator.js"
         months.add(txn.date.slice(0,7)); // YYYY-MM
       });
 
-
       const monthsArr = Array.from(months).sort((a,b) => b.localeCompare(a));
-      console.log(monthsArr)
-  
-
       // If 2025 exists, default select 2025's first month, else latest month
       let defaultMonth = monthsArr.find(m => m.startsWith('2025'));
       if (!defaultMonth) {
@@ -128,9 +124,6 @@ import {calculateRewardPoints} from "./utils/rewardCalculator.js"
       });
  
     }
-
-
-
     /**
      * Format YYYY-MM string to human readable month-year
      * e.g. "2023-03" => "Mar 2023"
@@ -193,10 +186,8 @@ import {calculateRewardPoints} from "./utils/rewardCalculator.js"
         acc[monthKey] = (acc[monthKey] || 0) + points;
         return acc;
       }, {});
-
       // Calculate total points all months
       const totalPoints = Object.values(pointsByMonth).reduce((a,b) => a + b, 0);
-
       if (!month) {
         rewardPointsSummary.innerHTML = `
           <p class="font-semibold">Total Reward Points (All Time): <span class="text-blue-600">${totalPoints}</span></p>
@@ -204,14 +195,12 @@ import {calculateRewardPoints} from "./utils/rewardCalculator.js"
         `;
         return;
       }
-
       const monthPoints = Math.floor(pointsByMonth[month] || 0);
       rewardPointsSummary.innerHTML = `
         <p class="font-semibold">Reward Points for <span class="text-blue-600">${formatMonthYear(month)}</span>: <span class="text-blue-700">${monthPoints}</span></p>
         <p class="font-semibold mt-2">Total Reward Points (All Time): <span class="text-blue-600">${totalPoints}</span></p>
       `;
     }
-
     /**
      * Render transactions table based on filtered transactions and current page
      * @param {Array} txns 
@@ -224,7 +213,6 @@ import {calculateRewardPoints} from "./utils/rewardCalculator.js"
       }
       const startIndex = (page - 1) * ITEMS_PER_PAGE;
       const pageItems = txns.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
 
       transactionsTableBody.innerHTML = pageItems.map(txn => {
         const dateObj = new Date(txn.date);
@@ -241,7 +229,6 @@ import {calculateRewardPoints} from "./utils/rewardCalculator.js"
         `;
       }).join('');
     }
-
     /**
      * Render pagination buttons based on filtered transaction count
      * @param {number} totalItems 
@@ -284,23 +271,16 @@ import {calculateRewardPoints} from "./utils/rewardCalculator.js"
       for (let i = startPage; i <= endPage; i++) {
         paginationSection.appendChild(createButton(i, i, false, i === currentPage));
       }
-
       // Next button
       paginationSection.appendChild(createButton('Next', currentPage+1, currentPage === totalPages));
     }
 
-    /**
-     * Update table and pagination render based on current filteredTransactions and state
-     */
     function updateTableAndPagination() {
       renderTransactionsTable(filteredTransactions, currentPage);
       renderPagination(filteredTransactions.length, currentPage);
       updateRewardPointsSummary(currentCustomerId, currentMonth);
     }
 
-    /**
-     * Event handler when customer selection changes
-     */
     function onCustomerChange() {
       currentCustomerId = customerSelect.value || null;
       currentPage = 1;
