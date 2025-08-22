@@ -91,6 +91,15 @@ import {fetchTransactions} from "./api/fetchData.js";
 
       // Get unique months for this customer sorted descending
       const custTxns = transactions.filter(txn => txn.customerId === customerId);
+
+      const years = new Set();
+
+      custTxns.forEach(txn => {
+        years.add(txn.date.slice(0,4)); // YYYY-MM
+      });
+ 
+      console.log(years);
+      
       const months = new Set();
       custTxns.forEach(txn => {
         months.add(txn.date.slice(0,7)); // YYYY-MM
