@@ -3,7 +3,7 @@ Overview
 This project implements a rewards program for a retailer, where customers earn points based on their purchases. The points are calculated based on the amount spent in each transaction, with specific rules for different spending brackets. The application allows users to view their reward points per month and total points earned over a three-month period.
 
 # App screens
- ![alt text](Home_screen.PNG) ![alt text](test.PNG) ![alt text](Customer_selecttion_Withdata.PNG)
+ ![alt text](test.PNG)
 
 # Features
 Customers earn:
