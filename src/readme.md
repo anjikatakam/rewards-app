@@ -2,6 +2,11 @@
 Overview
 This project implements a rewards program for a retailer, where customers earn points based on their purchases. The points are calculated based on the amount spent in each transaction, with specific rules for different spending brackets. The application allows users to view their reward points per month and total points earned over a three-month period.
 
+# App screens
+![alt text](Customer_selecttion_Withdata.PNG) 
+
+![alt text](Home_screen.PNG)
+
 # Features
 Customers earn:
 2 points for every dollar spent over $100.
@@ -34,11 +39,16 @@ Adhere to file naming conventions and JavaScript folder structure.
 Ensure all data passed to functions/modules/classes is dynamic; no hard-coded static data.
 Move all static data to a constants file for reuse.
 
+# CSS Stylings
+ used tailwind js and css 
 # Testing
-Implement a minimum of 3 positive and 3 negative unit test cases, including tests for whole numbers and factorial values to verify the reward calculation logic.
-Ensure transaction logging is implemented.
-CSS Stylings
-Apply proper CSS styling to enhance the user interface.
+Implement a minimum of 3 positive and 3 negative unit test cases, including tests for whole numbers and factorial values to verify the reward calculation logic. 
+ # Project root folder // rewards-app/ run the below commands to test the app
+ # npm install
+ # npm test
+
+ ![alt text](test.PNG)
+
 Documentation
 # Project Setup
 Clone the repository.
@@ -58,3 +68,4 @@ Include success screenshots of the test cases.
 
 # Conclusion
 This project provides a comprehensive rewards program for a retailer, allowing customers to track their points effectively. The implementation adheres to best practices in coding and design, ensuring a maintainable and user-friendly application.
+
