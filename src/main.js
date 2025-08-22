@@ -18,6 +18,7 @@ import {fetchTransactions} from "./api/fetchData.js";
 
     // DOM elements
     const customerSelect = document.getElementById('customerSelect');
+    const yearSelect = document.getElementById('yearSelect');
     const monthSelect = document.getElementById('monthSelect');
     const rewardPointsSummary = document.getElementById('rewardPointsSummary');
     const transactionsTableBody = document.getElementById('transactionsTableBody');
@@ -78,6 +79,16 @@ import {fetchTransactions} from "./api/fetchData.js";
      * @param {string} customerId
      */
     function populateMonthDropdown(customerId) {
+      yearSelect.innerHTML='';
+      if (!customerId) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = '-- Select Year --';
+        yearSelect.appendChild(option);
+        yearSelect.disabled = true;
+        return;
+      }
+      monthSelect.disabled = false;
       monthSelect.innerHTML = '';
       if (!customerId) {
         const option = document.createElement('option');
@@ -107,6 +118,7 @@ import {fetchTransactions} from "./api/fetchData.js";
 
 
       const monthsArr = Array.from(months).sort((a,b) => b.localeCompare(a));
+      console.log(monthsArr)
 
       // If 2025 exists, default select 2025's first month, else latest month
       let defaultMonth = monthsArr.find(m => m.startsWith('2025'));
@@ -130,7 +142,18 @@ import {fetchTransactions} from "./api/fetchData.js";
         }
         monthSelect.appendChild(opt);
       });
+ 
+   
+       const yearsArr = Array.from(years).sort((a,b) => b.localeCompare(a));
+        yearsArr.forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        yearSelect.appendChild(opt);
+      });
     }
+
+
 
     /**
      * Format YYYY-MM string to human readable month-year

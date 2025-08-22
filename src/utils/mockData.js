@@ -12,7 +12,7 @@
       }
       const data = [];
       const now = new Date();
-      const startMonth = new Date(now.getFullYear()-4, now.getMonth() - 11, 1); // 6 months back for variety
+      const startMonth = new Date(now.getFullYear()-3, now.getMonth() - 11, 1); // 6 months back for variety
 
       let transactionIndex = 1;
       for (const custId of customers) {
