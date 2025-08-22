@@ -1,0 +1,27 @@
+[
+  {
+    "customerId": "C001",
+    "transactionId": "T001",
+    "amount": 120,
+    "date": "2025-06-15"
+  },
+  {
+    "customerId": "C002",
+    "transactionId": "T002",
+    "amount": 75,
+    "date": "2025-07-02"
+  },
+  {
+    "customerId": "C002",
+    "transactionId": "T003",
+    "amount": 200,
+    "date": "2025-08-12"
+  },
+  {
+    "customerId": "C002",
+    "transactionId": "T003",
+    "amount": 500,
+    "date": "2025-08-21"
+  }
+
+]
