@@ -111,7 +111,23 @@ import {calculateRewardPoints} from "./utils/rewardCalculator.js"
       defaultOption.value = '';
       defaultOption.textContent = '-- Select Month --';
       monthSelect.appendChild(defaultOption);
+      
+      const firstThreeMonths = monthsArr.slice(0,3);
+      const currentYear = defaultMonth.slice(0,4);
 
+       if(currentYear === yearSelect.value) {
+        firstThreeMonths.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = formatMonthYear(m);
+        if (m === defaultMonth) {
+          opt.selected = true;
+          currentMonth = m;
+        }
+        monthSelect.appendChild(opt);
+      });
+       }
+       else {
       monthsArr.forEach(m => {
         const opt = document.createElement('option');
         opt.value = m;
@@ -122,6 +138,7 @@ import {calculateRewardPoints} from "./utils/rewardCalculator.js"
         }
         monthSelect.appendChild(opt);
       });
+    }
  
     }
     /**
